@@ -28,11 +28,14 @@ public class MainClass {
 		System.out.println(ProductTotalPrice.getTotalPriceOfAll());
 		System.out.println(productPage.checkPrices());
 		productPage.goToCart();
-		System.out.println("Цена была " + playstation.getPrice());
+		System.out.println("Цена на playstation была " + playstation.getPrice());
 		System.out.println("Цена была " + detroit.getPrice());
 		System.out.println("Общая сохраненная цена " + ProductTotalPrice.getTotalPriceOfAll());
 		System.out.println("Проверка общей цены : ");
-		System.out.println(productPage.checkPrices());
+		CartPage cartPage = new CartPage(driver);
+		System.out.println(cartPage.checkPrices());
+		System.out.println("Цена на playstation в корзине " + cartPage.getPriceOfProduct());
+		cartPage.clickRadioButton();
 		driver.quit();
 	}
 }

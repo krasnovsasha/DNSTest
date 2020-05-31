@@ -41,6 +41,6 @@ public class BasePage {
 
 	protected CartPage goToCart(){
 		cartLink.click();
-		return new CartPage();
+		return new CartPage(driver);
 	}
 }

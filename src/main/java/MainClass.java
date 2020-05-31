@@ -27,10 +27,12 @@ public class MainClass {
 		System.out.println(ProductTotalPrice.getTotalPrices() + "\n" + ProductTotalPrice.getTotalCounts());
 		System.out.println(ProductTotalPrice.getTotalPriceOfAll());
 		System.out.println(productPage.checkPrices());
-
-
-
-
+		productPage.goToCart();
+		System.out.println("Цена была " + playstation.getPrice());
+		System.out.println("Цена была " + detroit.getPrice());
+		System.out.println("Общая сохраненная цена " + ProductTotalPrice.getTotalPriceOfAll());
+		System.out.println("Проверка общей цены : ");
+		System.out.println(productPage.checkPrices());
 		driver.quit();
 	}
 }

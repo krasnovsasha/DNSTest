@@ -11,6 +11,8 @@ public class BasePage {
 	protected WebDriverWait wait;
 	@FindBy(xpath = "//input[@placeholder='Поиск по сайту']")
 	protected WebElement inputSearch;
+	@FindBy(xpath = "//span[@class='cart-link__icon']/parent::a")
+	private WebElement cartLink;
 
 	protected BasePage(WebDriver driver) {
 		this.driver = driver;
@@ -35,5 +37,10 @@ public class BasePage {
 		sendTextToSearchField(product.getName());
 		inputSearch.sendKeys(Keys.ENTER);
 		return new ResultsPage(driver);
+	}
+
+	protected CartPage goToCart(){
+		cartLink.click();
+		return new CartPage();
 	}
 }

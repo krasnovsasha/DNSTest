@@ -18,6 +18,7 @@ public class ProductPage extends BasePage {
 	@FindBy(xpath = "//span[@class='cart-link__price']")
 	private WebElement lintToCart;
 
+
 	private ProductPage waitElementsVisible() {
 		wait.until(ExpectedConditions.elementToBeClickable(selectWarranty));
 		return new ProductPage(driver);

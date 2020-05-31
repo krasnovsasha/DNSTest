@@ -19,6 +19,15 @@ public class MainClass {
 		resultsPage.chooseProduct(resultsPage.getProduct());
 		ProductPage productPage = new ProductPage(driver);
 		productPage.getAndSavePrice(playstation);
+		productPage.buyProduct();
+		Product detroit = new Product("detroit");
+		productPage.findItem(detroit);
+		productPage.getAndSavePrice(detroit);
+		productPage.buyProduct();
+		System.out.println(ProductTotalPrice.getTotalPrices() + "\n" + ProductTotalPrice.getTotalCounts());
+		System.out.println(ProductTotalPrice.getTotalPriceOfAll());
+		System.out.println(productPage.checkPrices());
+
 
 
 

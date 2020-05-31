@@ -17,4 +17,12 @@ public class ProductTotalPrice {
 	public static Map<String, Integer> getTotalCounts() {
 		return totalCounts;
 	}
+	
+	public static double getTotalPriceOfAll(){
+		double sum = 0.0;
+		for (double d:totalPrices.values()) {
+			sum += d;
+		}
+		return sum;
+	}
 }

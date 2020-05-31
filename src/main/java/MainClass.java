@@ -33,9 +33,13 @@ public class MainClass {
 		System.out.println("Общая сохраненная цена " + ProductTotalPrice.getTotalPriceOfAll());
 		System.out.println("Проверка общей цены : ");
 		CartPage cartPage = new CartPage(driver);
+		cartPage.clickRadioButton();
 		System.out.println(cartPage.checkPrices());
 		System.out.println("Цена на playstation в корзине " + cartPage.getPriceOfProduct());
-		cartPage.clickRadioButton();
+		System.out.println(cartPage.getTotalPriceOfProductInMenuBar());
+		ProductTotalPrice.setTotalPriceInCart(cartPage.getTotalPriceOfProductInMenuBar());
+		//удалить из корзины Detroit
+		
 		driver.quit();
 	}
 }

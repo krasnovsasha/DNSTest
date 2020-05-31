@@ -13,6 +13,8 @@ public class BasePage {
 	protected WebElement inputSearch;
 	@FindBy(xpath = "//span[@class='cart-link__icon']/parent::a")
 	private WebElement cartLink;
+	@FindBy(xpath = "//span[@class='cart-link__icon']/following-sibling::span//span")
+	private WebElement cartLinkPrice;
 
 	protected BasePage(WebDriver driver) {
 		this.driver = driver;
@@ -42,5 +44,11 @@ public class BasePage {
 	protected CartPage goToCart(){
 		cartLink.click();
 		return new CartPage(driver);
+	}
+
+	public Double getTotalPriceOfProductInMenuBar(){
+		(new WebDriverWait(driver, 30)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOf(cartLinkPrice)));
+		Double priceOfProductActual = Double.parseDouble(cartLinkPrice.getText().replaceAll(" ", ""));
+		return priceOfProductActual;
 	}
 }

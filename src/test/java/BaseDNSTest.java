@@ -28,10 +28,6 @@ public class BaseDNSTest {
 	public static void tearDown() {
 		driver.quit();
 	}
-	@Test
-	public void simpleTest(){
-		driver.get(urlMainPage);
-	}
 
 	private static void setUpBrowser(String browserName) {
 		String[] osName = System.getProperty("os.name").toLowerCase().split("\\s");

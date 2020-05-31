@@ -19,7 +19,11 @@ public class BasePage {
 	protected BasePage(WebDriver driver) {
 		this.driver = driver;
 		PageFactory.initElements(driver, this);
-		wait = new WebDriverWait(driver, 5);
+		wait = new WebDriverWait(driver, 20);
+	}
+
+	protected void goToPage(String url){
+		driver.get(url);
 	}
 
 	protected BasePage clickSearchField() {
@@ -47,7 +51,7 @@ public class BasePage {
 	}
 
 	public Double getTotalPriceOfProductInMenuBar(){
-		(new WebDriverWait(driver, 30)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOf(cartLinkPrice)));
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOf(cartLinkPrice)));
 		Double priceOfProductActual = Double.parseDouble(cartLinkPrice.getText().replaceAll(" ", ""));
 		return priceOfProductActual;
 	}

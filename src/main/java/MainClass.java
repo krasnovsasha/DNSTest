@@ -39,6 +39,8 @@ public class MainClass {
 		System.out.println(cartPage.getTotalPriceOfProductInMenuBar());
 		ProductTotalPrice.setTotalPriceInCart(cartPage.getTotalPriceOfProductInMenuBar());
 		//удалить из корзины Detroit
+		cartPage.deleteProductFromCart(cartPage.getButtonDeleteFromCart());
+		//проверить что Detroit нет больше в корзине и что сумма уменьшилась на цену Detroit
 		
 		driver.quit();
 	}

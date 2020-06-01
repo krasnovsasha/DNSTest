@@ -16,13 +16,17 @@ public class BasePage {
 	@FindBy(xpath = "//span[@class='cart-link__icon']/following-sibling::span//span")
 	private WebElement cartLinkPrice;
 
+	public WebElement getCartLinkPrice() {
+		return cartLinkPrice;
+	}
+
 	protected BasePage(WebDriver driver) {
 		this.driver = driver;
 		PageFactory.initElements(driver, this);
 		wait = new WebDriverWait(driver, 20);
 	}
 
-	protected void goToPage(String url){
+	protected void goToPage(String url) {
 		driver.get(url);
 	}
 
@@ -45,12 +49,12 @@ public class BasePage {
 		return new ResultsPage(driver);
 	}
 
-	protected CartPage goToCart(){
+	protected CartPage goToCart() {
 		cartLink.click();
 		return new CartPage(driver);
 	}
 
-	public Double getTotalPriceOfProductInMenuBar(){
+	public Double getTotalPriceOfProductInMenuBar() {
 		(new WebDriverWait(driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOf(cartLinkPrice)));
 		Double priceOfProductActual = Double.parseDouble(cartLinkPrice.getText().replaceAll(" ", ""));
 		return priceOfProductActual;

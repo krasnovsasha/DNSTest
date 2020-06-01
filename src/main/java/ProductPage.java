@@ -48,7 +48,7 @@ public class ProductPage extends BasePage {
 
 	public double priceInCartActual() {
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

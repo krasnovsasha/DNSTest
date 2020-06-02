@@ -61,9 +61,4 @@ public class BasePage {
 			return Double.parseDouble(cartLinkPrice.getText().replaceAll(" ", ""));
 		}
 	}
-
-	public void scroll(int x) {
-		executor = (JavascriptExecutor) driver;
-		executor.executeScript("window.scrollBy(0," + x + ")", "");
-	}
 }

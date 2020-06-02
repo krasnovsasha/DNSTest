@@ -1,7 +1,4 @@
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -11,10 +8,6 @@ public class CartPage extends BasePage {
 		super(driver);
 	}
 
-	@FindBy(xpath = "//div[contains(text(),'1626724')]/parent::div/parent::div/parent::div//span[@class='price__current']")
-	private WebElement productPlaystaition;
-	@FindBy(xpath = "//div[contains(text(),'1225442')]/parent::div/parent::div/parent::div//span[@class='price__current']")
-	private WebElement productDetroit;
 	@FindBy(xpath = "//div[@class='base-ui-radio-button additional-warranties-row__radio']//span[contains(text(),'+ 24  мес.')]")
 	private WebElement radioButton24;
 	@FindBy(xpath = "//div[@data-cart-product-id][1]//*[@class='count-buttons__icon-plus']")
@@ -26,17 +19,14 @@ public class CartPage extends BasePage {
 	@FindBy(xpath = "//button[@class='menu-control-button' and contains(text(),'Удалить')]")
 	private WebElement buttonDelete;
 	private String radioButtonCheckedXPath = "//span[contains(@class,'base-ui-radio-button__icon_checked') and contains(text(),'24')]";
+	private String productInCart = "//div[contains(text(),'%d')]/parent::div/parent::div/parent::div//span[@class='price__current']";
 
 	public String getRadioButtonXPath() {
 		return radioButtonCheckedXPath;
 	}
 
-	public WebElement getProductPlaystaition() {
-		return productPlaystaition;
-	}
-
-	public WebElement getProductDetroit() {
-		return productDetroit;
+	public WebElement getProductInCart(Product product) {
+		return driver.findElement(By.xpath(String.format(productInCart, product.getId())));
 	}
 
 	public WebElement getButtonDeleteFromCart() {
@@ -67,6 +57,7 @@ public class CartPage extends BasePage {
 	public CartPage deleteProductFromCart(WebElement element) {
 		wait.until(ExpectedConditions.elementToBeClickable(element));
 		element.click();
+		waitToRefresh();
 		return this;
 	}
 
@@ -83,10 +74,13 @@ public class CartPage extends BasePage {
 		}
 	}
 
-	public boolean checkProduct(int productID) {
-		wait.until(ExpectedConditions.visibilityOf(productPlaystaition));
-		waitToRefresh();
-		return driver.findElements(By.xpath(String.format("//div[contains(text(),'%d')]/parent::div/parent::div/parent::div//span[@class='price__current']", productID))).isEmpty();
+	public boolean checkProduct(Product product) {
+		try {
+			wait.until(ExpectedConditions.visibilityOf(getProductInCart(product)));
+			return getProductInCart(product).isDisplayed();
+		} catch (org.openqa.selenium.NoSuchElementException e) {
+			return false;
+		}
 	}
 
 	public boolean wasPriseChangedInCart(Product product, BasePage basePage) {
@@ -114,6 +108,9 @@ public class CartPage extends BasePage {
 
 	public boolean radioButtonIsChecked(String XPath) {
 		return driver.findElements(By.xpath(XPath)).isEmpty();
+	}
+	public void waitUntilClick(){
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@class='menu-control-button' and contains(text(),'Удалить')]")));
 	}
 }
 

@@ -13,8 +13,6 @@ public class ProductPage extends BasePage {
 	private WebElement price;
 	@FindBy(xpath = "//div[contains(@class,'buttons-wrapper')]//button[contains(@class,'buy-btn')]")
 	private WebElement buttonBuy;
-	@FindBy(xpath = "//span[@class='cart-link__price']")
-	private WebElement lintToCart;
 
 	public double getAndSavePrice(Product product) {
 		wait.until(ExpectedConditions.elementToBeClickable(buttonBuy));
@@ -22,13 +20,19 @@ public class ProductPage extends BasePage {
 		int idProduct = Integer.parseInt(driver.findElement(By.xpath("//div[@class=\"price-item-code\"]/span")).getText());
 		product.setPrice(productPrice);
 		product.setId(idProduct);
-		ProductTotalPrice.addCountAndPrice(product.getName(), productPrice);
 		return productPrice;
 	}
 
-	public ProductPage buyProduct() {
-		wait.until(ExpectedConditions.elementToBeClickable(buttonBuy));
-		buttonBuy.click();
-		return new ProductPage(driver);
+	public ProductPage buyProduct(Product product) {
+		try {
+			wait.until(ExpectedConditions.elementToBeClickable(buttonBuy));
+			buttonBuy.click();
+		} catch (org.openqa.selenium.NoSuchElementException e) {
+			wait.until(ExpectedConditions.elementToBeClickable(buttonBuy));
+			buttonBuy.click();
+		}
+		new CartPage(driver).waitToRefresh();
+		ProductTotalPrice.addCountAndPrice(product.getName(), product.getPrice());
+		return this;
 	}
 }

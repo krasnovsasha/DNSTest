@@ -20,7 +20,7 @@ public class ResultsPage extends BasePage {
 	private ResultsPage waitLoading() {
 		wait.until(ExpectedConditions.visibilityOf(presentInShops));
 		wait.until(ExpectedConditions.elementToBeClickable(presentInShops));
-		return new ResultsPage(driver);
+		return this;
 	}
 
 	public ProductPage chooseProduct(WebElement element) {

@@ -15,12 +15,8 @@ public class BasePage {
 	protected WebElement inputSearch;
 	@FindBy(xpath = "//span[@class='cart-link__icon']/parent::a")
 	private WebElement cartLink;
-	@FindBy(xpath = "//span[@class='cart-link__icon']/following-sibling::span//span")
+	@FindBy(xpath = "//div[@class=\"buttons\"]//span[@class='cart-link__price']")
 	private WebElement cartLinkPrice;
-
-	public WebElement getCartLinkPrice() {
-		return cartLinkPrice;
-	}
 
 	protected BasePage(WebDriver driver) {
 		this.driver = driver;
@@ -57,16 +53,17 @@ public class BasePage {
 	}
 
 	public Double getTotalPriceOfProductInMenuBar() {
-		(new WebDriverWait(driver, 10)).until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOf(cartLinkPrice)));
-		return Double.parseDouble(cartLinkPrice.getText().replaceAll(" ", ""));
+		try {
+			wait.until(ExpectedConditions.elementToBeClickable(cartLinkPrice));
+			return Double.parseDouble(cartLinkPrice.getText().replaceAll(" ", ""));
+		} catch (org.openqa.selenium.StaleElementReferenceException e) {
+			wait.until(ExpectedConditions.elementToBeClickable(cartLinkPrice));
+			return Double.parseDouble(cartLinkPrice.getText().replaceAll(" ", ""));
+		}
 	}
 
-	private void clickByJS(WebElement element) {
+	public void scroll(int x) {
 		executor = (JavascriptExecutor) driver;
-		executor.executeScript("arguments[0].click();", element);
-	}
-	public void scroll(int x){
-		executor = (JavascriptExecutor)driver;
-		executor.executeScript("window.scrollBy(0," + x +")", "");
+		executor.executeScript("window.scrollBy(0," + x + ")", "");
 	}
 }

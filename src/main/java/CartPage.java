@@ -4,14 +4,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class CartPage extends BasePage {
 	public CartPage(WebDriver driver) {
 		super(driver);
 	}
 
-	@FindBy(xpath = "//div[@class='total-amount__label']//div[@class='price__block price__block_main']//span[@class='price__current']")
-	private WebElement totalPriceInRightSide;
 	@FindBy(xpath = "//div[contains(text(),'1626724')]/parent::div/parent::div/parent::div//span[@class='price__current']")
 	private WebElement productPlaystaition;
 	@FindBy(xpath = "//div[contains(text(),'1225442')]/parent::div/parent::div/parent::div//span[@class='price__current']")
@@ -22,25 +21,18 @@ public class CartPage extends BasePage {
 	WebElement buttonAddToCart;
 	@FindBy(xpath = "//div[@data-cart-product-id][2]//*[@class='count-buttons__icon-minus']")
 	private WebElement buttonDeleteFromCart;
-	@FindBy(xpath = "//a[contains(text(),'Detroit')]")
-	private WebElement productInPage;
-	@FindBy(xpath = "//div[@data-cart-product-id]//*[@class='count-buttons__icon-minus']")
-	private WebElement delPlaystationFromCart;
 	@FindBy(xpath = "//a[contains(text(),'Вернуть удалённый товар')]")
 	private WebElement restoreProduct;
 	@FindBy(xpath = "//button[@class='menu-control-button' and contains(text(),'Удалить')]")
 	private WebElement buttonDelete;
+	private String radioButtonCheckedXPath = "//span[contains(@class,'base-ui-radio-button__icon_checked') and contains(text(),'24')]";
 
-	public WebElement getDelPlaystationFromCart() {
-		return delPlaystationFromCart;
+	public String getRadioButtonXPath() {
+		return radioButtonCheckedXPath;
 	}
 
 	public WebElement getProductPlaystaition() {
 		return productPlaystaition;
-	}
-
-	public WebElement getTotalPriceInRightSide() {
-		return totalPriceInRightSide;
 	}
 
 	public WebElement getProductDetroit() {
@@ -51,26 +43,17 @@ public class CartPage extends BasePage {
 		return buttonDeleteFromCart;
 	}
 
-	public WebElement getProductInPage() {
-		return productInPage;
-	}
-
 	public WebElement getButtonAddToCart() {
 		return buttonAddToCart;
 	}
 
-	public boolean checkPrices() {
-		Double priceInCartActual = Double.parseDouble(totalPriceInRightSide.getText().replaceAll(" ", ""));
-		Double priceINSafeActual = ProductTotalPrice.getTotalPriceOfAll();
-		return priceInCartActual.equals(priceINSafeActual);
-	}
-
 	public Double getPriceOfProduct(WebElement product) {
+		wait.until(ExpectedConditions.elementToBeClickable(product));
 		Double priceOfProductActual = Double.parseDouble(product.getText().replaceAll(" ", ""));
 		return priceOfProductActual;
 	}
 
-	public void clickRadioButton() {
+	public CartPage clickRadioButton() {
 		wait.until(ExpectedConditions.elementToBeClickable(radioButton24));
 		try {
 			radioButton24.click();
@@ -78,40 +61,64 @@ public class CartPage extends BasePage {
 			wait.until(ExpectedConditions.elementToBeClickable(radioButton24));
 			radioButton24.click();
 		}
-	}
-
-	public CartPage deleteProductFromCart(WebElement element) {
-		element.click();
 		return new CartPage(driver);
 	}
 
-	public void waitToRefresh(double totalPriceOfAll, BasePage basePage) {
-		wait.until(driver1 -> {
-			double priceOfProductInCart = basePage.getTotalPriceOfProductInMenuBar();
-			return priceOfProductInCart != totalPriceOfAll;
-		});
+	public CartPage deleteProductFromCart(WebElement element) {
+		CartPage cartPage = new CartPage(driver);
+		wait.until(ExpectedConditions.elementToBeClickable(element));
+		element.click();
+		cartPage.waitToRefresh();
+		return new CartPage(driver);
 	}
 
-	public boolean checkProduct(String articul) {
-		return driver.findElements(By.xpath(String.format("//div[contains(text(),'%s')]/parent::div/parent::div/parent::div//span[@class='price__current']",articul))).isEmpty();
+	public void waitToRefresh() {
+		try {
+			CartPage cartPage = new CartPage(driver);
+			BasePage basePage = new BasePage(driver);
+			WebDriverWait wdw = new WebDriverWait(driver, 5);
+			ProductTotalPrice.setTotalPriceInCart(cartPage.getTotalPriceOfProductInMenuBar());
+			wdw.until(driver -> {
+				double newPriceInCart = basePage.getTotalPriceOfProductInMenuBar();
+				return newPriceInCart != ProductTotalPrice.getTotalPriceInCart();
+			});
+		} catch (org.openqa.selenium.TimeoutException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public boolean checkProduct(int productID) {
+		wait.until(ExpectedConditions.visibilityOf(productPlaystaition));
+		return driver.findElements(By.xpath(String.format("//div[contains(text(),'%d')]/parent::div/parent::div/parent::div//span[@class='price__current']", productID))).isEmpty();
 	}
 
 	public boolean wasPriseChangedInCart(Product product, BasePage basePage) {
 		return (ProductTotalPrice.getTotalPriceInCart() - basePage.getTotalPriceOfProductInMenuBar()) == product.getPrice();
 	}
 
-	public CartPage addProductToCart(WebElement element) {
-		element.click();
+	public CartPage addProductToCart(WebElement element, int count) {
+		CartPage cartPage = new CartPage(driver);
+		for (int i = 0; i < count; i++) {
+			element.click();
+			cartPage.waitToRefresh();
+		}
 		return new CartPage(driver);
 	}
 
 	public CartPage restoreProduct() {
+		wait.until(ExpectedConditions.elementToBeClickable(restoreProduct));
 		restoreProduct.click();
 		return new CartPage(driver);
 	}
-	public CartPage deleteProductFromCartPage(){
+
+	public CartPage deleteProductFromCartPage() {
+		wait.until(ExpectedConditions.elementToBeClickable(buttonDelete));
 		buttonDelete.click();
 		return new CartPage(driver);
+	}
+
+	public boolean radioButtonIsChecked(String XPath) {
+		return driver.findElements(By.xpath(XPath)).isEmpty();
 	}
 }
 

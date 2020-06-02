@@ -61,25 +61,21 @@ public class CartPage extends BasePage {
 			wait.until(ExpectedConditions.elementToBeClickable(radioButton24));
 			radioButton24.click();
 		}
-		return new CartPage(driver);
+		return this;
 	}
 
 	public CartPage deleteProductFromCart(WebElement element) {
-		CartPage cartPage = new CartPage(driver);
 		wait.until(ExpectedConditions.elementToBeClickable(element));
 		element.click();
-		cartPage.waitToRefresh();
-		return new CartPage(driver);
+		return this;
 	}
 
 	public void waitToRefresh() {
 		try {
-			CartPage cartPage = new CartPage(driver);
-			BasePage basePage = new BasePage(driver);
 			WebDriverWait wdw = new WebDriverWait(driver, 5);
-			ProductTotalPrice.setTotalPriceInCart(cartPage.getTotalPriceOfProductInMenuBar());
+			ProductTotalPrice.setTotalPriceInCart(getTotalPriceOfProductInMenuBar());
 			wdw.until(driver -> {
-				double newPriceInCart = basePage.getTotalPriceOfProductInMenuBar();
+				double newPriceInCart = getTotalPriceOfProductInMenuBar();
 				return newPriceInCart != ProductTotalPrice.getTotalPriceInCart();
 			});
 		} catch (org.openqa.selenium.TimeoutException e) {
@@ -89,6 +85,7 @@ public class CartPage extends BasePage {
 
 	public boolean checkProduct(int productID) {
 		wait.until(ExpectedConditions.visibilityOf(productPlaystaition));
+		waitToRefresh();
 		return driver.findElements(By.xpath(String.format("//div[contains(text(),'%d')]/parent::div/parent::div/parent::div//span[@class='price__current']", productID))).isEmpty();
 	}
 
@@ -97,24 +94,22 @@ public class CartPage extends BasePage {
 	}
 
 	public CartPage addProductToCart(WebElement element, int count) {
-		CartPage cartPage = new CartPage(driver);
 		for (int i = 0; i < count; i++) {
 			element.click();
-			cartPage.waitToRefresh();
+			waitToRefresh();
 		}
-		return new CartPage(driver);
+		return this;
 	}
 
 	public CartPage restoreProduct() {
-		wait.until(ExpectedConditions.elementToBeClickable(restoreProduct));
-		restoreProduct.click();
-		return new CartPage(driver);
+		wait.until(ExpectedConditions.elementToBeClickable(restoreProduct)).click();
+		return this;
 	}
 
 	public CartPage deleteProductFromCartPage() {
 		wait.until(ExpectedConditions.elementToBeClickable(buttonDelete));
 		buttonDelete.click();
-		return new CartPage(driver);
+		return this;
 	}
 
 	public boolean radioButtonIsChecked(String XPath) {

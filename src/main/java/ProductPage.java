@@ -11,7 +11,7 @@ public class ProductPage extends BasePage {
 
 	@FindBy(xpath = "//span[@class=\"current-price-value\"]")
 	private WebElement price;
-	@FindBy(xpath = "//div[contains(@class,'buttons-wrapper')]//button[contains(@class,\"buy-btn\")]")
+	@FindBy(xpath = "//div[contains(@class,'buttons-wrapper')]//button[contains(@class,'buy-btn')]")
 	private WebElement buttonBuy;
 	@FindBy(xpath = "//span[@class='cart-link__price']")
 	private WebElement lintToCart;
